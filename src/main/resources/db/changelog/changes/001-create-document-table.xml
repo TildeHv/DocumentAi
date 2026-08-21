@@ -5,18 +5,21 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.0.xsd">
 
+    <property name="uuid_function" value="gen_random_uuid()"/>
+    <property name="uuid_function" value="random_uuid()" dbms="h2"/>
+
     <changeSet id="20240612-1" author="tilde">
         <createTable tableName="document">
-            <column name="id" type="UUID" defaultValueComputed="gen_random_uuid()">
+            <column name="id" type="UUID" defaultValueComputed="${uuid_function}">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="filename" type="VARCHAR(255)">
+            <column name="file_name" type="VARCHAR(100)">
                 <constraints nullable="false"/>
             </column>
             <column name="file_type" type="VARCHAR(100)">
                 <constraints nullable="false"/>
             </column>
-            <column name="content" type="TEXT">
+            <column name="content" type="BYTEA">
                 <constraints nullable="false"/>
             </column>
             <column name="created_at" type="TIMESTAMP WITH TIME ZONE" defaultValueComputed="CURRENT_TIMESTAMP">

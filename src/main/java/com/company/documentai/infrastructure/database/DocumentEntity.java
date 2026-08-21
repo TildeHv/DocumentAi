@@ -1,12 +1,13 @@
 package com.company.documentai.infrastructure.database;
 
+import com.company.documentai.domain.model.Document;
+import com.company.documentai.domain.model.DocumentToSave;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
+import java.io.File;
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.UUID;
 
@@ -22,16 +23,36 @@ public class DocumentEntity {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(name = "filename", nullable = false)
-    private String filename;
+    @Column(name = "file_name", nullable = false)
+    private String fileName;
 
     @Column(name = "file_type", nullable = false)
     private String fileType;
 
-    @Column(name = "content", nullable = false, columnDefinition = "TEXT")
-    private String content;
+    @Column(name = "content", nullable = false)
+    private byte[] content;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
+
+    public static DocumentEntity fromDomain(@NonNull final DocumentToSave documentToSave) {
+        return DocumentEntity.builder().fileName(documentToSave.fileName())
+                .fileType(documentToSave.fileType())
+                .content(documentToSave.content())
+                .createdAt(documentToSave.createdAt())
+                .build();
+    }
+
+    public Document toDomain() {
+        return new Document(
+                id,
+                fileName,
+                fileType,
+                createdAt,
+                content
+        );
+    }
+
+
 }
