@@ -8,3 +8,9 @@ services:
       POSTGRES_PASSWORD: Munk123
     ports:
       - "5432:5432"
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: documentai-ollama
+    ports:
+      - "11434:11434"

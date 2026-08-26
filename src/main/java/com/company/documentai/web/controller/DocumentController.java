@@ -1,43 +1,160 @@
 package com.company.documentai.web.controller;
 
-
+import com.company.documentai.domain.model.Document;
+import com.company.documentai.domain.model.DocumentToSave;
+import com.company.documentai.domain.service.FileService;
+import com.company.documentai.web.model.DocumentDto;
+import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-
-import java.util.Map;
-
+import java.io.IOException;
+import java.time.Instant;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/v1/documents")
+@RequiredArgsConstructor
 public class DocumentController {
 
+    private final FileService fileService;
+
+    private static final Set<String> ALLOWED_EXTENSIONS = Set.of(
+            "txt",
+            "pdf",
+            "doc",
+            "docx"
+    );
 
     @PostMapping(
             value = "/upload",
-            consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE
+    )
     public ResponseEntity<Map<String, String>> uploadFile(
-            @RequestParam(value = "file", required = true) final MultipartFile file) {
+            @RequestParam("file") final MultipartFile file
+    ) throws IOException {
 
-
-        final String contentType = file.getContentType();
-        final String fileName = file.getOriginalFilename();
-
-
-        if (MediaType.APPLICATION_JSON_VALUE.equals(contentType)) {
+        if (file.isEmpty()) {
             return ResponseEntity.badRequest().build();
         }
 
+        final String fileName = file.getOriginalFilename();
 
-        return ResponseEntity.ok(Map.of(
-                "fileName", StringUtils.hasText(fileName) ? fileName : "unknown",
-                "contentType", StringUtils.hasText(contentType) ? contentType : "unknown"
-        ));
+        if (!StringUtils.hasText(fileName) || !fileName.contains(".")) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        final String extension = fileName
+                .substring(fileName.lastIndexOf('.') + 1)
+                .toLowerCase();
+
+        if (!ALLOWED_EXTENSIONS.contains(extension)) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of(
+                            "error",
+                            "Only .txt, .pdf, .doc and .docx files are allowed"
+                    ));
+        }
+
+        final byte[] fileBytes = file.getBytes();
+
+        final String fileType =
+                StringUtils.hasText(file.getContentType())
+                        ? file.getContentType()
+                        : "application/octet-stream";
+
+        final DocumentToSave documentToSave = new DocumentToSave(
+                fileName,
+                fileType,
+                Instant.now(),
+                fileBytes
+        );
+
+        final Document savedDocument =
+                fileService.saveDocument(documentToSave);
+
+        return ResponseEntity.ok(
+                Map.of(
+                        "id", savedDocument.id().toString(),
+                        "fileName", savedDocument.fileName(),
+                        "contentType", savedDocument.fileType(),
+                        "status", "successfully saved"
+                )
+        );
+    }
+
+    @GetMapping
+    public ResponseEntity<List<DocumentDto>> getDocuments() {
+
+        final List<DocumentDto> documents =
+                fileService.getAllDocuments()
+                        .stream()
+                        .sorted(
+                                Comparator.comparing(Document::createdAt).reversed()
+                        )
+                        .map(DocumentDto::fromDomain)
+                        .toList();
+
+        return ResponseEntity.ok(documents);
+    }
+
+    @GetMapping("/{id}/file")
+    public ResponseEntity<byte[]> downloadFile(
+            @PathVariable final UUID id
+    ) {
+
+        try {
+            final Document document =
+                    fileService.getDocumentById(id);
+
+            return ResponseEntity.ok()
+                    .contentType(
+                            MediaType.parseMediaType(document.fileType())
+                    )
+                    .header(
+                            HttpHeaders.CONTENT_DISPOSITION,
+                            "attachment; filename=\"" + document.fileName() + "\""
+                    )
+                    .body(
+                            document.content());
+
+        } catch (final EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteDocument(
+            @PathVariable final UUID id
+    ) {
+
+        try {
+            fileService.deleteDocument(id);
+            return ResponseEntity.noContent().build();
+
+        } catch (final EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/{id}/summary")
+    public ResponseEntity<String> summarizeDocument(
+            @PathVariable final UUID id
+    ) {
+
+        try {
+            final String summary =
+                    fileService.summarizeDocument(id);
+
+            return ResponseEntity.ok(summary);
+
+        } catch (final EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 }
