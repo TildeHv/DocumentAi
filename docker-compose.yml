@@ -10,7 +10,18 @@ services:
       - "5432:5432"
 
   ollama:
-    image: ollama/ollama:latest
+    image: ollama/ollama:0.32.15
     container_name: documentai-ollama
     ports:
       - "11434:11434"
+    volumes:
+      - ollama-data:/root/.ollama
+    entrypoint: [ "/bin/sh", "-c" ]
+    command: >
+      "ollama serve &
+      sleep 5 &&
+      ollama pull llama3.2 &&
+      wait"
+
+volumes:
+   ollama-data:

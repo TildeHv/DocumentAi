@@ -42,7 +42,6 @@ public class OllamaClient {
                                 "content",
                                 """
                                 Du är en assistent som sammanfattar dokument.
-                                Svara alltid på svenska.
                                 Var tydlig och kortfattad.
                                 Ta med de viktigaste punkterna och slutsatserna.
                                 """
