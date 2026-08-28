@@ -18,10 +18,10 @@ public class OllamaClient {
     private final String model;
 
     public OllamaClient(
-            ObjectMapper objectMapper,
-            RestClient.Builder restClientBuilder,
-            @Value("${ollama.url:http://localhost:11434}") String ollamaUrl,
-            @Value("${ollama.model:qwen3}") String model
+            final ObjectMapper objectMapper,
+            final RestClient.Builder restClientBuilder,
+            @Value("${ollama.url:http://localhost:11434}") final String ollamaUrl,
+            @Value("${ollama.model:qwen3}") final String model
     ) {
         this.objectMapper = objectMapper;
         this.restClientBuilder = restClientBuilder;
