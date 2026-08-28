@@ -32,22 +32,17 @@ public class DocumentTextExtractorImpl
 
         return switch (fileType) {
 
-            case "text/plain" ->
-                    extractText(content);
+            case "text/plain" -> extractText(content);
 
-            case "application/pdf" ->
-                    extractPdf(content);
+            case "application/pdf" -> extractPdf(content);
 
-            case "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ->
-                    extractDocx(content);
+            case "application/vnd.openxmlformats-officedocument.wordprocessingml.document" -> extractDocx(content);
 
-            case "application/msword" ->
-                    extractDoc(content);
+            case "application/msword" -> extractDoc(content);
 
-            default ->
-                    throw new IllegalArgumentException(
-                            "Unsupported document type: " + fileType
-                    );
+            default -> throw new IllegalArgumentException(
+                    "Unsupported document type: " + fileType
+            );
         };
     }
 
