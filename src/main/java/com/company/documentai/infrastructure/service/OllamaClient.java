@@ -29,6 +29,7 @@ public class OllamaClient {
         this.model = model;
     }
 
+    //TODO lägg till @NonNull på alla argument i alla metoder
     public String summarize(final String text) {
 
         final Map<String, Object> request = Map.of(

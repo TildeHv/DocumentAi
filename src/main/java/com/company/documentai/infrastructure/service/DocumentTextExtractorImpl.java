@@ -18,6 +18,7 @@ import java.nio.charset.StandardCharsets;
 public class DocumentTextExtractorImpl
         implements DocumentTextExtractor {
 
+    //TODO lägg till @NoNull på all agument i alla metoder, kolla  if (content == null || content.length == 0) före anropet hit
     @Override
     public String extract(
             final String fileType,

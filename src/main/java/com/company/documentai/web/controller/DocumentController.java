@@ -43,6 +43,8 @@ public class DocumentController {
             return ResponseEntity.badRequest().build();
         }
 
+        //TODO flytta allt detta och skapande av DocumentToSave till en mapper i stället
+        // final DocumentToSave documentToSave = DocumentMapper.toDomain(file)
         final String fileName = file.getOriginalFilename();
 
         if (!StringUtils.hasText(fileName) || !fileName.contains(".")) {
@@ -78,6 +80,7 @@ public class DocumentController {
         final Document savedDocument =
                 fileService.saveDocument(documentToSave);
 
+        //TODO returnera ett object i stället (DocumentDto)
         return ResponseEntity.ok(
                 Map.of(
                         "id", savedDocument.id().toString(),

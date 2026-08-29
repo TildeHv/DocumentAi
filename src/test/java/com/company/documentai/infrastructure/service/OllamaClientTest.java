@@ -45,6 +45,7 @@ class OllamaClientTest {
                 );
     }
 
+    //TODO det här testet fungerar inte
     @Test
     void shouldSummarizeText() {
 

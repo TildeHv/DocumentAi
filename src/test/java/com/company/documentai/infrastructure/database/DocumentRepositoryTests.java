@@ -13,6 +13,7 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+//TODO funkar inte - saknar filnamn
 @DataJpaTest
 @ActiveProfiles("test")
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -24,6 +25,7 @@ class DocumentRepositoryTests {
     @Test
     @DisplayName("Should save document")
     void shouldSaveDocument() {
+        //TODO final på alla variabler
         byte[] content = "Hello world".getBytes(StandardCharsets.UTF_8);
 
         DocumentEntity entity = DocumentEntity.builder()

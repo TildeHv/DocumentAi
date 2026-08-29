@@ -16,6 +16,7 @@ import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+//TODO duplicerat test, finns ju även för DocumentTextExtractorImplTest, slå ihop dem så allt testas 1 gång
 class DocumentTextExtractorTest {
 
     private DocumentTextExtractor extractor;
