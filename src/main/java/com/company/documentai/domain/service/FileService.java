@@ -2,7 +2,7 @@ package com.company.documentai.domain.service;
 
 import com.company.documentai.domain.model.Document;
 import com.company.documentai.domain.model.DocumentToSave;
-import com.company.documentai.infrastructure.service.DocumentTextExtractorImpl;
+import com.company.documentai.infrastructure.service.DocumentTextExtractor;
 import com.company.documentai.infrastructure.service.FileServiceInfrastructure;
 import com.company.documentai.infrastructure.service.OllamaClient;
 import lombok.AllArgsConstructor;
@@ -17,7 +17,7 @@ import java.util.UUID;
 public class FileService {
 
     private final FileServiceInfrastructure infrastructure;
-    private final DocumentTextExtractorImpl textExtractor;
+    private final DocumentTextExtractor textExtractor;
     private final OllamaClient ollamaClient;
 
     public Document saveDocument(

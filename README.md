@@ -7,7 +7,7 @@ A Java-based service for managing and processing documents using Spring Boot, Po
 The project uses [SpringDoc OpenAPI](https://springdoc.org/) to generate Swagger UI and API documentation. When the application is running, you can access it at:
 
 - **Swagger UI**: [http://localhost:8081/swagger-ui/index.html](http://localhost:8081/swagger-ui/index.html)
-- **OpenAPI Spec**: [http://localhost:8081/v3/api-docs](http://localhost:8081/v3/api-docs) //TODO ta bort denna - behövs inte
+- **OpenAPI Spec**: [http://localhost:8081/v3/api-docs](http://localhost:8081/v3/api-docs)
 
 ## Getting Started
 
@@ -49,6 +49,3 @@ The project follows a clean architecture-inspired structure:
 - **Database Storage**: Documents are persisted in a PostgreSQL database with UUIDs.
 - **API Documentation**: Interactive Swagger UI for testing endpoints.
 - **Docker Support**: Pre-configured Docker Compose for easy local development.
-
-
-[//]: # (TODO lägg till en text om vad du gjort och varför lösningen ser ut som den gör)

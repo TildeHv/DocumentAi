@@ -49,8 +49,8 @@ class OllamaClientTest {
     void shouldSummarizeText() {
 
         final String text = """
-                This is a test document.
-                The document is about AI and RAG.
+                Detta är ett testdokument.
+                Dokumentet handlar om AI och RAG.
                 """;
 
         final String response = """
@@ -58,7 +58,7 @@ class OllamaClientTest {
                   "model": "qwen3",
                   "message": {
                     "role": "assistant",
-                    "content": "The document is about AI and RAG."
+                    "content": "Dokumentet handlar om AI och RAG."
                   },
                   "done": true
                 }
@@ -86,11 +86,11 @@ class OllamaClientTest {
                                   "messages": [
                                     {
                                       "role": "system",
-                                      "content": "You are an assistant that summarizes documents.\\nBe clear and concise.\\nInclude the most important points and conclusions.\\n"
+                                      "content": "Du är en assistent som sammanfattar dokument.\\nSvara alltid på svenska.\\nVar tydlig och kortfattad.\\nTa med de viktigaste punkterna och slutsatserna.\\n"
                                     },
                                     {
                                       "role": "user",
-                                      "content": "This is a test document.\\nThe document is about AI and RAG.\\n"
+                                      "content": "Detta är ett testdokument.\\nDokumentet handlar om AI och RAG.\\n"
                                     }
                                   ],
                                   "stream": false
@@ -109,7 +109,7 @@ class OllamaClientTest {
 
         assertThat(result)
                 .isEqualTo(
-                        "The document is about AI and RAG."
+                        "Dokumentet handlar om AI och RAG."
                 );
 
         mockServer.verify();
@@ -119,7 +119,7 @@ class OllamaClientTest {
     void shouldThrowExceptionWhenResponseDoesNotContainText() {
 
         final String text =
-                "Test document";
+                "Testdokument";
 
         final String response = """
                 {

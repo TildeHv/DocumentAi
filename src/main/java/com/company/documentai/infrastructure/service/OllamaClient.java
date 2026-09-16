@@ -2,7 +2,6 @@ package com.company.documentai.infrastructure.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -30,9 +29,7 @@ public class OllamaClient {
         this.model = model;
     }
 
-    public String summarize(
-            @NonNull final String text
-    ) {
+    public String summarize(final String text) {
 
         final Map<String, Object> request = Map.of(
                 "model",
@@ -44,9 +41,9 @@ public class OllamaClient {
                                 "system",
                                 "content",
                                 """
-                                You are an assistant that summarizes documents.
-                                Be clear and concise.
-                                Include the most important points and conclusions.
+                                Du är en assistent som sammanfattar dokument.
+                                Var tydlig och kortfattad.
+                                Ta med de viktigaste punkterna och slutsatserna.
                                 """
                         ),
                         Map.of(
@@ -73,9 +70,7 @@ public class OllamaClient {
         return extractText(response);
     }
 
-    private String extractText(
-            @NonNull final String response
-    ) {
+    private String extractText(final String response) {
 
         try {
             final JsonNode root =

@@ -14,7 +14,6 @@
 	<name>documentai</name>
 	<description>Document AI Service</description>
 	<properties>
-<!--		TODO byt till java 24-->
 		<java.version>21</java.version>
 		<lombok.version>1.18.40</lombok.version>
 	</properties>

@@ -34,32 +34,30 @@ class FileServiceInfrastructureTest {
     @DisplayName("Should save document using repository")
     void shouldSaveDocument() {
 
-        final Instant now = Instant.now();
+        Instant now = Instant.now();
 
-        final byte[] content =
+        byte[] content =
                 "Hello world".getBytes(StandardCharsets.UTF_8);
 
-        final DocumentToSave documentToSave =
-                new DocumentToSave(
-                        "test.txt",
-                        "text/plain",
-                        now,
-                        content
-                );
+        DocumentToSave documentToSave = new DocumentToSave(
+                "test.txt",
+                "text/plain",
+                now,
+                content
+        );
 
-        final DocumentEntity savedEntity =
-                DocumentEntity.builder()
-                        .id(UUID.randomUUID())
-                        .fileName("test.txt")
-                        .fileType("text/plain")
-                        .content(content)
-                        .createdAt(now)
-                        .build();
+        DocumentEntity savedEntity = DocumentEntity.builder()
+                .id(UUID.randomUUID())
+                .fileName("test.txt")
+                .fileType("text/plain")
+                .content(content)
+                .createdAt(now)
+                .build();
 
         when(repository.save(any(DocumentEntity.class)))
                 .thenReturn(savedEntity);
 
-        final Document result =
+        Document result =
                 infrastructure.saveFile(documentToSave);
 
         assertThat(result.id())
@@ -85,16 +83,15 @@ class FileServiceInfrastructureTest {
     @DisplayName("Should propagate repository exception")
     void shouldPropagateRepositoryException() {
 
-        final byte[] content =
+        byte[] content =
                 "Hello world".getBytes(StandardCharsets.UTF_8);
 
-        final DocumentToSave documentToSave =
-                new DocumentToSave(
-                        "test.txt",
-                        "text/plain",
-                        Instant.now(),
-                        content
-                );
+        DocumentToSave documentToSave = new DocumentToSave(
+                "test.txt",
+                "text/plain",
+                Instant.now(),
+                content
+        );
 
         when(repository.save(any(DocumentEntity.class)))
                 .thenThrow(new RuntimeException("Database error"));
@@ -113,33 +110,31 @@ class FileServiceInfrastructureTest {
     @DisplayName("Should preserve binary document content")
     void shouldPreserveBinaryDocumentContent() {
 
-        final byte[] pdfContent = new byte[] {
+        byte[] pdfContent = new byte[] {
                 0x25, 0x50, 0x44, 0x46, 0x2D,
                 0x31, 0x2E, 0x37, 0x00, 0x01,
                 (byte) 0xFF, (byte) 0xFE
         };
 
-        final DocumentToSave documentToSave =
-                new DocumentToSave(
-                        "test.pdf",
-                        "application/pdf",
-                        Instant.now(),
-                        pdfContent
-                );
+        DocumentToSave documentToSave = new DocumentToSave(
+                "test.pdf",
+                "application/pdf",
+                Instant.now(),
+                pdfContent
+        );
 
-        final DocumentEntity savedEntity =
-                DocumentEntity.builder()
-                        .id(UUID.randomUUID())
-                        .fileName("test.pdf")
-                        .fileType("application/pdf")
-                        .content(pdfContent)
-                        .createdAt(documentToSave.createdAt())
-                        .build();
+        DocumentEntity savedEntity = DocumentEntity.builder()
+                .id(UUID.randomUUID())
+                .fileName("test.pdf")
+                .fileType("application/pdf")
+                .content(pdfContent)
+                .createdAt(documentToSave.createdAt())
+                .build();
 
         when(repository.save(any(DocumentEntity.class)))
                 .thenReturn(savedEntity);
 
-        final Document result =
+        Document result =
                 infrastructure.saveFile(documentToSave);
 
         assertThat(result.content())

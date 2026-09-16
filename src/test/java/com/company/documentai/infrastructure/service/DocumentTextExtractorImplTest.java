@@ -23,9 +23,9 @@ class DocumentTextExtractorImplTest {
     @Test
     void shouldExtractTextFromPlainText() {
 
-        final String input = "Detta är ett testdokument.";
+        String input = "Detta är ett testdokument.";
 
-        final String result =
+        String result =
                 extractor.extract(
                         "text/plain",
                         input.getBytes(StandardCharsets.UTF_8));
@@ -36,12 +36,12 @@ class DocumentTextExtractorImplTest {
     @Test
     void shouldExtractTextFromPdf() throws IOException {
 
-        final byte[] content =
+        byte[] content =
                 Files.readAllBytes(
                         Path.of(
                                 "src/test/resources/testfiles/Studentspegeln 2025.pdf"));
 
-        final String result =
+        String result =
                 extractor.extract(
                         "application/pdf",
                         content);
@@ -52,7 +52,7 @@ class DocumentTextExtractorImplTest {
     @Test
     void shouldThrowExceptionForEmptyContent() {
 
-        final IllegalArgumentException exception =
+        IllegalArgumentException exception =
                 assertThrows(
                         IllegalArgumentException.class,
                         () ->
@@ -68,7 +68,7 @@ class DocumentTextExtractorImplTest {
     @Test
     void shouldThrowExceptionForNullContent() {
 
-        final IllegalArgumentException exception =
+        IllegalArgumentException exception =
                 assertThrows(
                         IllegalArgumentException.class,
                         () ->
@@ -84,7 +84,7 @@ class DocumentTextExtractorImplTest {
     @Test
     void shouldThrowExceptionForUnsupportedDocumentType() {
 
-        final IllegalArgumentException exception =
+        IllegalArgumentException exception =
                 assertThrows(
                         IllegalArgumentException.class,
                         () ->
@@ -100,10 +100,10 @@ class DocumentTextExtractorImplTest {
     @Test
     void shouldThrowExceptionForInvalidPdf() {
 
-        final byte[] invalidPdf =
+        byte[] invalidPdf =
                 "This is not a PDF".getBytes(StandardCharsets.UTF_8);
 
-        final IllegalStateException exception =
+        IllegalStateException exception =
                 assertThrows(
                         IllegalStateException.class,
                         () ->

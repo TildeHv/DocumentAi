@@ -1,13 +1,12 @@
 package com.company.documentai.infrastructure.service;
 
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.apache.poi.hwpf.HWPFDocument;
 import org.apache.poi.hwpf.extractor.WordExtractor;
-import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayInputStream;
@@ -16,12 +15,15 @@ import java.nio.charset.StandardCharsets;
 
 @Service
 @RequiredArgsConstructor
-public class DocumentTextExtractorImpl {
+public class DocumentTextExtractorImpl
+        implements DocumentTextExtractor {
 
+    @Override
     public String extract(
-            @NonNull final String fileType,
+            final String fileType,
             final byte[] content
     ) {
+
         if (content == null || content.length == 0) {
             throw new IllegalArgumentException(
                     "Document content is empty"
@@ -29,10 +31,15 @@ public class DocumentTextExtractorImpl {
         }
 
         return switch (fileType) {
+
             case "text/plain" -> extractText(content);
+
             case "application/pdf" -> extractPdf(content);
+
             case "application/vnd.openxmlformats-officedocument.wordprocessingml.document" -> extractDocx(content);
+
             case "application/msword" -> extractDoc(content);
+
             default -> throw new IllegalArgumentException(
                     "Unsupported document type: " + fileType
             );
@@ -42,6 +49,7 @@ public class DocumentTextExtractorImpl {
     private String extractText(
             final byte[] content
     ) {
+
         return new String(
                 content,
                 StandardCharsets.UTF_8
@@ -51,12 +59,16 @@ public class DocumentTextExtractorImpl {
     private String extractPdf(
             final byte[] content
     ) {
+
         try (var document = Loader.loadPDF(content)) {
+
             final PDFTextStripper stripper =
                     new PDFTextStripper();
 
             return stripper.getText(document);
+
         } catch (IOException e) {
+
             throw new IllegalStateException(
                     "Could not extract text from PDF",
                     e
@@ -67,6 +79,7 @@ public class DocumentTextExtractorImpl {
     private String extractDocx(
             final byte[] content
     ) {
+
         try (
                 XWPFDocument document =
                         new XWPFDocument(
@@ -76,8 +89,11 @@ public class DocumentTextExtractorImpl {
                 XWPFWordExtractor extractor =
                         new XWPFWordExtractor(document)
         ) {
+
             return extractor.getText();
+
         } catch (IOException e) {
+
             throw new IllegalStateException(
                     "Could not extract text from DOCX",
                     e
@@ -88,6 +104,7 @@ public class DocumentTextExtractorImpl {
     private String extractDoc(
             final byte[] content
     ) {
+
         try (
                 HWPFDocument document =
                         new HWPFDocument(
@@ -97,8 +114,11 @@ public class DocumentTextExtractorImpl {
                 WordExtractor extractor =
                         new WordExtractor(document)
         ) {
+
             return extractor.getText();
+
         } catch (IOException e) {
+
             throw new IllegalStateException(
                     "Could not extract text from DOC",
                     e
