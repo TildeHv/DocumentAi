@@ -29,7 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest
 @ContextConfiguration(classes = DocumentaiApplication.class)
-class DocumentControllerTests {
+class DocumentControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
