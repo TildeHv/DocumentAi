@@ -3,6 +3,7 @@ package com.company.documentai.web.controller;
 import com.company.documentai.domain.model.Document;
 import com.company.documentai.domain.model.DocumentToSave;
 import com.company.documentai.domain.service.FileService;
+import com.company.documentai.web.mapper.DocumentMapper;
 import com.company.documentai.web.model.DocumentDto;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -14,15 +15,15 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.time.Instant;
-import java.util.*;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/documents")
 @RequiredArgsConstructor
 public class DocumentController {
-
-    private final FileService fileService;
 
     private static final Set<String> ALLOWED_EXTENSIONS = Set.of(
             "txt",
@@ -31,11 +32,13 @@ public class DocumentController {
             "docx"
     );
 
+    private final FileService fileService;
+
     @PostMapping(
             value = "/upload",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE
     )
-    public ResponseEntity<Map<String, String>> uploadFile(
+    public ResponseEntity<DocumentDto> uploadFile(
             @RequestParam("file") final MultipartFile file
     ) throws IOException {
 
@@ -54,37 +57,17 @@ public class DocumentController {
                 .toLowerCase();
 
         if (!ALLOWED_EXTENSIONS.contains(extension)) {
-            return ResponseEntity.badRequest()
-                    .body(Map.of(
-                            "error",
-                            "Only .txt, .pdf, .doc and .docx files are allowed"
-                    ));
+            return ResponseEntity.badRequest().build();
         }
 
-        final byte[] fileBytes = file.getBytes();
-
-        final String fileType =
-                StringUtils.hasText(file.getContentType())
-                        ? file.getContentType()
-                        : "application/octet-stream";
-
-        final DocumentToSave documentToSave = new DocumentToSave(
-                fileName,
-                fileType,
-                Instant.now(),
-                fileBytes
-        );
+        final DocumentToSave documentToSave =
+                DocumentMapper.toDomain(file, fileName);
 
         final Document savedDocument =
                 fileService.saveDocument(documentToSave);
 
         return ResponseEntity.ok(
-                Map.of(
-                        "id", savedDocument.id().toString(),
-                        "fileName", savedDocument.fileName(),
-                        "contentType", savedDocument.fileType(),
-                        "status", "successfully saved"
-                )
+                DocumentDto.fromDomain(savedDocument)
         );
     }
 
@@ -95,7 +78,9 @@ public class DocumentController {
                 fileService.getAllDocuments()
                         .stream()
                         .sorted(
-                                Comparator.comparing(Document::createdAt).reversed()
+                                Comparator.comparing(
+                                        Document::createdAt
+                                ).reversed()
                         )
                         .map(DocumentDto::fromDomain)
                         .toList();
@@ -114,14 +99,17 @@ public class DocumentController {
 
             return ResponseEntity.ok()
                     .contentType(
-                            MediaType.parseMediaType(document.fileType())
+                            MediaType.parseMediaType(
+                                    document.fileType()
+                            )
                     )
                     .header(
                             HttpHeaders.CONTENT_DISPOSITION,
-                            "attachment; filename=\"" + document.fileName() + "\""
+                            "attachment; filename=\""
+                                    + document.fileName()
+                                    + "\""
                     )
-                    .body(
-                            document.content());
+                    .body(document.content());
 
         } catch (final EntityNotFoundException e) {
             return ResponseEntity.notFound().build();

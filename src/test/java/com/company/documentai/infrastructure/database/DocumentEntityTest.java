@@ -17,19 +17,20 @@ class DocumentEntityTest {
     @DisplayName("Should map correctly from DocumentToSave to entity")
     void shouldMapFromDomain() {
 
-        Instant now = Instant.now();
+        final Instant now = Instant.now();
 
-        byte[] content = "world class code"
+        final byte[] content = "world class code"
                 .getBytes(StandardCharsets.UTF_8);
 
-        DocumentToSave documentToSave = new DocumentToSave(
-                "test.pdf",
-                "application/pdf",
-                now,
-                content
-        );
+        final DocumentToSave documentToSave =
+                new DocumentToSave(
+                        "test.pdf",
+                        "application/pdf",
+                        now,
+                        content
+                );
 
-        DocumentEntity entity =
+        final DocumentEntity entity =
                 DocumentEntity.fromDomain(documentToSave);
 
         assertThat(entity.getId()).isNull();
@@ -45,20 +46,21 @@ class DocumentEntityTest {
     void shouldMapToDomain() {
 
         final UUID id = UUID.randomUUID();
-        Instant now = Instant.now();
+        final Instant now = Instant.now();
 
-        byte[] content = "binary data test"
+        final byte[] content = "binary data test"
                 .getBytes(StandardCharsets.UTF_8);
 
-        DocumentEntity entity = new DocumentEntity(
-                id,
-                "test.pdf",
-                "application/octet-stream",
-                content,
-                now
-        );
+        final DocumentEntity entity =
+                new DocumentEntity(
+                        id,
+                        "test.pdf",
+                        "application/octet-stream",
+                        content,
+                        now
+                );
 
-        Document document = entity.toDomain();
+        final Document document = entity.toDomain();
 
         assertThat(document.id()).isEqualTo(id);
         assertThat(document.fileName()).isEqualTo("test.pdf");
@@ -73,20 +75,21 @@ class DocumentEntityTest {
     @DisplayName("Should preserve binary content when mapping from domain")
     void shouldPreserveBinaryContentWhenMappingFromDomain() {
 
-        byte[] content = new byte[] {
+        final byte[] content = new byte[] {
                 0x25, 0x50, 0x44, 0x46, 0x2D,
                 0x31, 0x2E, 0x37, 0x00, 0x01,
                 (byte) 0xFF, (byte) 0xFE
         };
 
-        DocumentToSave documentToSave = new DocumentToSave(
-                "test.pdf",
-                "application/pdf",
-                Instant.now(),
-                content
-        );
+        final DocumentToSave documentToSave =
+                new DocumentToSave(
+                        "test.pdf",
+                        "application/pdf",
+                        Instant.now(),
+                        content
+                );
 
-        DocumentEntity entity =
+        final DocumentEntity entity =
                 DocumentEntity.fromDomain(documentToSave);
 
         assertThat(entity.getContent())
@@ -97,7 +100,7 @@ class DocumentEntityTest {
     @DisplayName("Should preserve binary content when mapping to domain")
     void shouldPreserveBinaryContentWhenMappingToDomain() {
 
-        byte[] content = new byte[] {
+        final byte[] content = new byte[] {
                 0x00,
                 0x01,
                 0x02,
@@ -107,15 +110,16 @@ class DocumentEntityTest {
                 (byte) 0xFF
         };
 
-        DocumentEntity entity = DocumentEntity.builder()
-                .id(UUID.randomUUID())
-                .fileName("test.pdf")
-                .fileType("application/pdf")
-                .createdAt(Instant.now())
-                .content(content)
-                .build();
+        final DocumentEntity entity =
+                DocumentEntity.builder()
+                        .id(UUID.randomUUID())
+                        .fileName("test.pdf")
+                        .fileType("application/pdf")
+                        .createdAt(Instant.now())
+                        .content(content)
+                        .build();
 
-        Document document = entity.toDomain();
+        final Document document = entity.toDomain();
 
         assertThat(document.content())
                 .containsExactly(content);
@@ -125,23 +129,25 @@ class DocumentEntityTest {
     @DisplayName("Should preserve multiline text content")
     void shouldPreserveMultilineContent() {
 
-        String text = """
-                First line
-                Second line
-                Third line
-                """;
+        final String text = """
+            First line
+            Second line
+            Third line
+            """;
 
-        byte[] content = text.getBytes(StandardCharsets.UTF_8);
+        final byte[] content =
+                text.getBytes(StandardCharsets.UTF_8);
 
-        DocumentEntity entity = DocumentEntity.builder()
-                .id(UUID.randomUUID())
-                .fileName("test.txt")
-                .fileType("text/plain")
-                .createdAt(Instant.now())
-                .content(content)
-                .build();
+        final DocumentEntity entity =
+                DocumentEntity.builder()
+                        .id(UUID.randomUUID())
+                        .fileName("test.txt")
+                        .fileType("text/plain")
+                        .createdAt(Instant.now())
+                        .content(content)
+                        .build();
 
-        Document document = entity.toDomain();
+        final Document document = entity.toDomain();
 
         assertThat(document.content())
                 .containsExactly(content);
