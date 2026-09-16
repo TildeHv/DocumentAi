@@ -13,6 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class DocumentEntityTest {
 
+    //TODO final på alla variabler - gäller alla tester
     @Test
     @DisplayName("Should map correctly from DocumentToSave to entity")
     void shouldMapFromDomain() {

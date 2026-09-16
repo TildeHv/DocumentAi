@@ -20,6 +20,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+//TODO saknar tester på en hel del metoder i FileService
 @ExtendWith(MockitoExtension.class)
 class FileServiceTest {
 
@@ -29,6 +30,7 @@ class FileServiceTest {
     @InjectMocks
     private FileService fileService;
 
+    //TODO final på alla variabler
     @Test
     @DisplayName("Should save a document")
     void shouldSaveDocument() {
