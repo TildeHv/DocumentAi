@@ -88,7 +88,7 @@ public class DocumentController {
         return ResponseEntity.ok(documents);
     }
 
-    @GetMapping("/{id}/file")
+    @GetMapping("/{id}/download")
     public ResponseEntity<byte[]> downloadFile(
             @PathVariable final UUID id
     ) {
